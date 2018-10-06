@@ -1,7 +1,7 @@
 gameObj.Dungeon = function(){};
 
 var enemyButton;
-var skillBtn1, skillBtn2, skillBtn3, skillBtn4, skillBtn5, test;
+var skillBtn1, skillBtn2, skillBtn3, skillBtn4, skillBtn5, test, attackBtn;
 
 var hero = {
     hp: 100,
@@ -32,9 +32,10 @@ var heroSkills = {
 };
 
 var enemySkills = {
-    1: ["Poison Claw", 5],
-    2: ["Leathal Sting", 10],
-    3: ["Scratch", 10]
+    "0": ["Tackle", 5],
+    "1": ["Poison Claw", 5],
+    "2": ["Leathal Sting", 10],
+    "3": ["Scratch", 10]
 };
 
 gameObj.Dungeon.prototype = {
@@ -62,6 +63,7 @@ gameObj.Dungeon.prototype = {
         skillBtn4 = game.add.button(350, 400, "IceSword", addSkillToQueue, this);
         skillBtn5 = game.add.button(400, 400, "FireArrow", addSkillToQueue, this);
         
+        attackBtn = game.add.button(600, 475, "haha", attack, this);
         test = game.time.events.add(Phaser.Timer.SECOND * 10, console.log("hihihi"), this);
         //skillBtn1.onInputDown.add(addSkill(skillBtn1.key));
     },
@@ -83,12 +85,13 @@ function attackEnemy(){
 };
 
 function addSkillToQueue(btn){
-    if (hero.skillQueue.length >= 2){
+    if (hero.skillQueue.length >= 5){
         attack();
     }
     else{
         //let heroSkills = searchSkill(btn);
-        let rndNum = Math.floor(Math.random() * enemySkills.length);
+        var rndNum = Math.floor(Math.random() * Object.keys(enemySkills).length);
+        console.log(rndNum);
         hero.skillQueue.push(heroSkills[btn.key]);
         enemy.skillQueue.push(enemySkills[rndNum]);
         console.log(hero.skillQueue);
@@ -103,12 +106,19 @@ function addSkillToQueue(btn){
 };*/
 
 function attack(){
-    for (var i = 0; i<hero.skillQueue.length; i++){
-        enemy.hp -= hero.skillQueue[i][1];
-        hero.hp -= enemy.skillQueue[i][1];
-        console.log("Hero used " + hero.skillQueue[i][0] + " dealing " + hero.skillQueue[i][1] + " damage");
-        console.log("Enemy used " + enemy.skillQueue[i][0] + " dealing " + enemy.skillQueue[i][1] + " damage");
-        console.log(hero.hp);
-        console.log(enemy.hp);
+    if (hero.skillQueue.length < 5){
+        console.log("Please select your skills");
+    }
+    else{
+        for (var i = 0; i<hero.skillQueue.length; i++){
+            enemy.hp -= hero.skillQueue[i][1];
+            hero.hp -= enemy.skillQueue[i][1];
+            console.log("Hero used " + hero.skillQueue[i][0] + " dealing " + hero.skillQueue[i][1] + " damage");
+            console.log("Enemy used " + enemy.skillQueue[i][0] + " dealing " + enemy.skillQueue[i][1] + " damage");
+            console.log(hero.hp);
+            console.log(enemy.hp);
+        }
+        hero.skillQueue.length = 0;
+        enemy.skillQueue.length = 0;
     }
 }
